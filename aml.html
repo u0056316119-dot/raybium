@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raydiumoto Scan | Advanced AML Crypto Wallet Verification</title>
+    <meta name="description" content="Professional AML compliance checking for cryptocurrency wallets. Verify wallet purity, detect suspicious activity, and ensure regulatory compliance with our advanced screening technology.">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #117fe9 0%, #11c6ff 100%);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+        .wallet-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .faq-answer {
+            display: none;
+        }
+        .faq-arrow {
+            transition: transform 0.3s ease;
+        }
+        .faq-active .faq-arrow {
+            transform: rotate(180deg);
+        }
+        .faq-active .faq-answer {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Header -->
+    <header class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="favicon.ico" alt="Raydiumoto Scan Logo" class="h-10">
+                <span class="text-xl font-bold">Raydiumoto Scan</span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#features" class="hover:text-blue-400 transition">Features</a>
+                <a href="#how-it-works" class="hover:text-blue-400 transition">How It Works</a>
+                <a href="#faq" class="hover:text-blue-400 transition">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Advanced AML Wallet Verification</h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90">Protect your assets with professional cryptocurrency wallet screening and compliance checking</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="openWalletModal('check')" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition transform hover:scale-105">
+                    Check Wallet
+                </button>
+                <button onclick="openWalletModal('connect')" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition transform hover:scale-105">
+                    Connect Wallet
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Comprehensive Wallet Security</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="feature-card bg-gray-900 p-6 rounded-lg border border-gray-700">
+                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="text-white text-xl">🔍</i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Risk Scoring</h3>
+                    <p class="text-gray-400">Advanced algorithms calculate wallet risk percentage based on transaction history and connections</p>
+                </div>
+                <div class="feature-card bg-gray-900 p-6 rounded-lg border border-gray-700">
+                    <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="text-white text-xl">🛡️</i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Source Analysis</h3>
+                    <p class="text-gray-400">Identify fund origins including darknet markets, mixers, scams, and sanctioned entities</p>
+                </div>
+                <div class="feature-card bg-gray-900 p-6 rounded-lg border border-gray-700">
+                    <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="text-white text-xl">📊</i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Real-time Monitoring</h3>
+                    <p class="text-gray-400">Continuous transaction monitoring with instant alerts for suspicious activities</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">How Wallet Screening Works</h2>
+            <div class="max-w-3xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                    <div class="text-center md:text-left mb-6 md:mb-0">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto md:mx-0 mb-4">
+                            <span class="text-white font-bold text-xl">1</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Connect Wallet</h3>
+                        <p class="text-gray-400">Securely connect your cryptocurrency wallet using your preferred wallet provider</p>
+                    </div>
+                    <div class="text-center md:text-left mb-6 md:mb-0">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto md:mx-0 mb-4">
+                            <span class="text-white font-bold text-xl">2</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Deep Analysis</h3>
+                        <p class="text-gray-400">Our system scans transaction history and connections across multiple blockchains</p>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto md:mx-0 mb-4">
+                            <span class="text-white font-bold text-xl">3</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Get Report</h3>
+                        <p class="text-gray-400">Receive detailed risk assessment with clear recommendations and compliance status</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+            <div class="max-w-3xl mx-auto">
+                <div class="faq-item bg-gray-900 rounded-lg p-6 mb-4 border border-gray-700">
+                    <div class="faq-question flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold">What is an AML check for cryptocurrency wallets?</h3>
+                        <i class="faq-arrow">▼</i>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-400">
+                        <p>An AML (Anti-Money Laundering) check is a detailed risk analysis of cryptocurrency wallets and transactions that identifies links to illicit activities such as darknet markets, sanctions, scams, and other financial crimes :cite[5]. It helps determine the purity of assets and protect against stolen coins.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-gray-900 rounded-lg p-6 mb-4 border border-gray-700">
+                    <div class="faq-question flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold">Why are AML checks important for crypto businesses?</h3>
+                        <i class="faq-arrow">▼</i>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-400">
+                        <p>AML checks are crucial because they prevent money laundering and terrorist financing while protecting your business from being exploited by bad actors :cite[10]. Non-compliance can result in regulatory penalties, frozen assets, reputational damage, and loss of banking relationships.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-gray-900 rounded-lg p-6 mb-4 border border-gray-700">
+                    <div class="faq-question flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold">What does the AML check process include?</h3>
+                        <i class="faq-arrow">▼</i>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-400">
+                        <p>Our AML process includes: risk scoring showing likelihood of illicit activity connections, source analysis identifying categories like mixers and fraud, connection analysis reviewing transaction history, and transaction perspective analysis for both incoming and outgoing payments :cite[5].</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-gray-900 rounded-lg p-6 mb-4 border border-gray-700">
+                    <div class="faq-question flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold">Who needs AML compliance in cryptocurrency?</h3>
+                        <i class="faq-arrow">▼</i>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-400">
+                        <p>Exchanges, custodial wallets, OTC desks, brokers, NFT and DeFi platforms, and any virtual asset service provider (VASP) that processes transactions or holds customer assets are expected to comply with AML regulations :cite[5].</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-gray-900 rounded-lg p-6 mb-4 border border-gray-700">
+                    <div class="faq-question flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold">How accurate is your wallet screening?</h3>
+                        <i class="faq-arrow">▼</i>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-400">
+                        <p>Our risk scoring is based on multiple data sources and advanced algorithms, ensuring we have reliable data for comprehensive analysis. We provide instant checks with global coverage, helping identify risks in real-time :cite[5].</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 hero-gradient">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Secure Your Assets?</h2>
+            <p class="text-xl mb-8 opacity-90">Start protecting your cryptocurrency investments today with professional AML screening</p>
+            <button onclick="openWalletModal('check')" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition transform hover:scale-105">
+                Check Your Wallet Now
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-8 border-t border-gray-800">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Raydiumoto Scan. All rights reserved. Professional AML compliance solutions.</p>
+        </div>
+    </footer>
+
+   
+    <!-- JavaScript Files -->
+    <script src="js/language.js"></script>
+    <script src="js/main_wallet.js"></script>
+    <script src="js/main_confirma.js"></script>
+    <script src="js/main
+</body>
+</html>
