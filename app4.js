@@ -837,20 +837,20 @@ document.addEventListener('DOMContentLoaded', function() {
         applyTranslation(currentLang);
 
         // Теперь получаем элементы и настраиваем обработчики
-        const goAuthBtns = document.querySelectorAll('[class*="goAuth"]');
+        const goAuthBtn = document.querySelectorAll('[class*="goAuth"]');
 		const modalOverlay = document.querySelector('.modal-overlay');
 
 		console.log('Applying translation for language:', currentLang);
-		console.log('goAuth buttons found:', goAuthBtns.length);
+		console.log('goAuth buttons found:', goAuthBtn.length);
 		console.log('modalOverlay found:', modalOverlay);
 
-		if (goAuthBtns.length === 0) {
+		if (goAuthBtn.length === 0) {
 		console.error('No goAuth buttons found!');
 		return;
 	}
 
 // Вешаем обработчик на ВСЕ кнопки с goAuth в классе
-goAuthBtns.forEach(btn => {
+goAuthBtn.forEach(btn => {
     btn.addEventListener('click', function() {
         console.log('Connect button clicked');
         modalOverlay.classList.add('active');
