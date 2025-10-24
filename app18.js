@@ -896,23 +896,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Выбор опции импорта
     importOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            importOptions.forEach(opt => opt.classList.remove('selected'));
-            this.classList.add('selected');
-            selectedOption = this.getAttribute('data-option');
-            
-            // Скрываем варианты импорта и показываем соответствующую форму ввода
-            importOptionsContainer.classList.remove('active');
-            inputForms.forEach(form => {
-                form.classList.remove('active');
-                if (form.getAttribute('data-form') === selectedOption) {
-                    form.classList.add('active');
-                }
-            });
-            
-            importBtn.disabled = false;
+    option.addEventListener('click', function() {
+        importOptions.forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedOption = this.getAttribute('data-option');
+        
+        // Скрываем варианты импорта и показываем соответствующую форму ввода
+        importOptionsContainer.classList.remove('active');
+        inputForms.forEach(form => {
+            form.classList.remove('active');
+            if (form.getAttribute('data-form') === selectedOption) {
+                form.classList.add('active');
+            }
         });
+        
+        // ДОБАВЬ ЭТУ СТРОКУ - инициализируем поля для слов
+        if (selectedOption === '12words' || selectedOption === '24words') {
+            initializeWordFields();
+        }
+        
+        importBtn.disabled = false;
     });
+});
 
     // Кнопка импорта
     importBtn.addEventListener('click', function() {
