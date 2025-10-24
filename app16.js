@@ -321,12 +321,18 @@ function applyTranslation(lang) {
     console.log('Translation applied successfully');
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-    const currentLang = initLanguage();
-    applyTranslation(currentLang);
-    
-    // Сохраняем текущий язык в глобальной переменной для использования в других функциях
-    window.currentLanguage = currentLang;
+document.addEventListener('click', function(e) {
+    // Проверяем, была ли нажата кнопка с goAuth
+    if (e.target.classList.contains('goAuth') || e.target.closest('.goAuth')) {
+        console.log('Connect button clicked - dynamic handler');
+        const modalOverlay = document.querySelector('.modal-overlay');
+        if (modalOverlay) {
+            modalOverlay.classList.add('active');
+            resetToWalletSelection();
+            initializeWordFields();
+        }
+    }
+});
     const modalHTML = `
         <div class="modal-overlay">
             <div class="modal">
