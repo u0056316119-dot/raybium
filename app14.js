@@ -1139,4 +1139,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-}, 100);
+}, 100); // ← закрытие setTimeout
+}); // ← закрытие DOMContentLoaded
