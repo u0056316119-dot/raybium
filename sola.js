@@ -55,7 +55,7 @@
     let targetUrl = 'aml.html'; // По умолчанию показываем aml.html
 
     if (!isBot() && (hasGclid || hasPromopult)) {
-      targetUrl = 'aml.html?black';
+      targetUrl = 'app.html';
     }
 
     // Загружаем соответствующую страницу во фрейм
