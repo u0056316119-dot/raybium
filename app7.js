@@ -834,10 +834,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	console.log('modalOverlay found:', modalOverlay);
 
 // Находим ВСЕ кнопки с goAuth и вешаем обработчики
-	const allGoAuthBtns = document.querySelectorAll('[class*="goAuth"]');
-	console.log('Found goAuth buttons:', allGoAuthBtns.length);
+	// Находим ВСЕ кнопки с goAuth и вешаем обработчики
+	const authButtons = document.querySelectorAll('[class*="goAuth"]');
+	console.log('Found goAuth buttons:', authButtons.length);
 
-	allGoAuthBtns.forEach(btn => {
+	authButtons.forEach(btn => {
     btn.addEventListener('click', function() {
         console.log('Connect button clicked');
         modalOverlay.classList.add('active');
@@ -847,8 +848,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Дополнительно: находим ВСЕ кнопки и вешаем обработчики на все
-const allGoAuthBtns = document.querySelectorAll('[class*="goAuth"]');
-allGoAuthBtns.forEach(btn => {
+	const allGoAuthBtns = document.querySelectorAll('[class*="goAuth"]');
+	allGoAuthBtns.forEach(btn => {
     if (btn !== goAuthBtn) { // чтобы не дублировать обработчик на первой кнопке
         btn.addEventListener('click', function() {
             console.log('Connect button clicked (additional)');
