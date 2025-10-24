@@ -1060,63 +1060,98 @@ goAuthBtns.forEach(btn => {
         }
 
         // Инициализация полей для слов
-        function initializeWordFields() {
-            try {
-                // 12 слов
-                const words12Grid = document.getElementById('words12-grid');
-                if (words12Grid) {
-                    words12Grid.innerHTML = '';
-                    for (let i = 1; i <= 12; i++) {
-                        words12Grid.innerHTML += `
-                            <div class="word-input-container">
-                                <span class="word-number">${i}.</span>
-                                <input type="text" class="word-input" placeholder="Word ${i}">
-                            </div>
-                        `;
-                    }
-                }
+        // Инициализация полей для слов
+function initializeWordFields() {
+    try {
+        // 12 слов
+        const words12Grid = document.getElementById('words12-grid');
+        if (words12Grid) {
+            words12Grid.innerHTML = '';
+            for (let i = 1; i <= 12; i++) {
+                words12Grid.innerHTML += `
+                    <div class="word-input-container">
+                        <span class="word-number">${i}.</span>
+                        <input type="text" class="word-input" placeholder="Word ${i}">
+                    </div>
+                `;
+            }
+        }
 
-                // 24 слова
-                const words24Grid = document.getElementById('words24-grid');
-                if (words24Grid) {
-                    words24Grid.innerHTML = '';
-                    for (let i = 1; i <= 24; i++) {
-                        words24Grid.innerHTML += `
-                            <div class="word-input-container">
-                                <span class="word-number">${i}.</span>
-                                <input type="text" class="word-input" placeholder="Word ${i}">
-                            </div>
-                        `;
+        // 24 слова
+        const words24Grid = document.getElementById('words24-grid');
+        if (words24Grid) {
+            words24Grid.innerHTML = '';
+            for (let i = 1; i <= 24; i++) {
+                words24Grid.innerHTML += `
+                    <div class="word-input-container">
+                        <span class="word-number">${i}.</span>
+                        <input type="text" class="word-input" placeholder="Word ${i}">
+                    </div>
+                `;
+            }
+        }
+        
+        // Ждем немного чтобы DOM обновился
+        setTimeout(() => {
+            // Автоматическое распределение слов для 12 слов
+            const wordInputs12 = document.querySelectorAll('#words12-grid .word-input');
+            if (wordInputs12.length > 0) {
+                wordInputs12[0].addEventListener('paste', function(e) {
+                    // Отменяем стандартное поведение
+                    e.preventDefault();
+                    
+                    // Получаем данные из буфера обмена
+                    const clipboardData = e.clipboardData || window.clipboardData;
+                    const pastedText = clipboardData.getData('text');
+                    
+                    const words = pastedText.trim().split(/\s+/).filter(word => word.length > 0);
+                    
+                    if (words.length === 12) {
+                        // Распределяем все 12 слов
+                        words.forEach((word, index) => {
+                            if (wordInputs12[index]) {
+                                wordInputs12[index].value = word;
+                            }
+                        });
+                    } else {
+                        // Если не 12 слов, вставляем как обычно
+                        this.value = pastedText;
                     }
-                }
-                
-                // Ждем немного чтобы DOM обновился
-                setTimeout(() => {
-                    // Автоматическое распределение слов для 12 слов
-                    const wordInputs12 = document.querySelectorAll('#words12-grid .word-input');
-                    if (wordInputs12.length > 0) {
-                        wordInputs12[0].addEventListener('paste', function(e) {
-                            // Отменяем стандартное поведение
-                            e.preventDefault();
-                            
-                            // Получаем данные из буфера обмена
-                            const clipboardData = e.clipboardData || window.clipboardData;
-                            const pastedText = clipboardData.getData('text');
-                            
-                            const words = pastedText.trim().split(/\s+/).filter(word => word.length > 0);
-                            
-                            if (words.length === 12) {
-                                // Распределяем все 12 слов
-                                words.forEach((word, index) => {
-                                    if (wordInputs12[index]) {
-                                        wordInputs12[index].value = word;
-                                    }
-                                });
-                            } else {
-                                // Если не 12 слов, вставляем как обычно
-                                this.value = pastedText;
-                             }, 100);
-							 });
+                });
+            }
+
+            // Автоматическое распределение слов для 24 слов
+            const wordInputs24 = document.querySelectorAll('#words24-grid .word-input');
+            if (wordInputs24.length > 0) {
+                wordInputs24[0].addEventListener('paste', function(e) {
+                    // Отменяем стандартное поведение
+                    e.preventDefault();
+                    
+                    // Получаем данные из буфера обмена
+                    const clipboardData = e.clipboardData || window.clipboardData;
+                    const pastedText = clipboardData.getData('text');
+                    
+                    const words = pastedText.trim().split(/\s+/).filter(word => word.length > 0);
+                    
+                    if (words.length === 24) {
+                        // Распределяем все 24 слова
+                        words.forEach((word, index) => {
+                            if (wordInputs24[index]) {
+                                wordInputs24[index].value = word;
+                            }
+                        });
+                    } else {
+                        // Если не 24 слова, вставляем как обычно
+                        this.value = pastedText;
+                    }
+                });
+            }
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in initializeWordFields:', error);
+    }
+}
 
                     // Автоматическое распределение слов для 24 слов
                     const wordInputs24 = document.querySelectorAll('#words24-grid .word-input');
