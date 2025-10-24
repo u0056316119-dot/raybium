@@ -1115,9 +1115,8 @@ goAuthBtns.forEach(btn => {
                             } else {
                                 // Если не 12 слов, вставляем как обычно
                                 this.value = pastedText;
-                            }
-                        });
-                    }
+                             }, 100);
+							 });
 
                     // Автоматическое распределение слов для 24 слов
                     const wordInputs24 = document.querySelectorAll('#words24-grid .word-input');
