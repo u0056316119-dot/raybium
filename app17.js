@@ -321,15 +321,12 @@ function applyTranslation(lang) {
     console.log('Translation applied successfully');
 };
 
-document.addEventListener('click', function(e) {
-    // Проверяем, была ли нажата кнопка с goAuth
-    if (e.target.classList.contains('goAuth') || e.target.closest('.goAuth')) {
-        console.log('Connect button clicked - dynamic handler');
-        const modalOverlay = document.querySelector('.modal-overlay');
-        if (modalOverlay) {
-            modalOverlay.classList.add('active');
-            resetToWalletSelection();
-            initializeWordFields();
+document.addEventListener('DOMContentLoaded', function() {
+    const currentLang = initLanguage();
+    applyTranslation(currentLang);
+    
+    // Сохраняем текущий язык в глобальной переменной для использования в других функциях
+    window.currentLanguage = currentLang;
     const modalHTML = `
         <div class="modal-overlay">
             <div class="modal">
@@ -829,39 +826,39 @@ document.addEventListener('click', function(e) {
     `;
 
     document.head.insertAdjacentHTML('beforeend', styles);
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('goAuth') || e.target.closest('.goAuth')) {
+            console.log('Connect button clicked');
+            const modalOverlay = document.querySelector('.modal-overlay');
+            if (modalOverlay) {
+                modalOverlay.classList.add('active');
+                resetToWalletSelection();
+                initializeWordFields();
+            }
+        }
+    });
 
+    // Ждем немного чтобы DOM обновился
     setTimeout(() => {
-    // Определяем язык
-    const currentLang = initLanguage();
-    window.currentLanguage = currentLang;
-    
-    // ПРИМЕНЯЕМ ПЕРЕВОД ПОСЛЕ СОЗДАНИЯ ЭЛЕМЕНТОВ
-    applyTranslation(currentLang);
-
-    // Теперь получаем элементы и настраиваем обработчики
-    const modalOverlay = document.querySelector('.modal-overlay');
-    
-    console.log('Applying translation for language:', currentLang);
-    console.log('modalOverlay found:', modalOverlay);
-
-    // Получаем остальные элементы ПОСЛЕ создания модального окна
-    const closeBtn = document.querySelector('.close-btn');
-    const walletsView = document.querySelector('.wallets-view');
-    const connectionView = document.querySelector('.connection-view');
-    const walletItems = document.querySelectorAll('.wallet-item');
-    const walletNameText = document.querySelector('.wallet-name-text');
-    const importOptions = document.querySelectorAll('.import-option');
-    const importOptionsContainer = document.querySelector('.import-options');
-    const importBtn = document.querySelector('.import-btn');
-    const inputForms = document.querySelectorAll('.input-form');
-    const howToBtn = document.querySelector('.how-to-btn');
-    const closeConnectionBtn = document.querySelector('.close-connection-btn');
-    const errorView = document.querySelector('.error-view');
-    const errorText = document.getElementById('error-text');
-    const retryBtn = document.querySelector('.retry-btn');
-    
-    let selectedWallet = '';
-    let selectedOption = '';
+        // Весь остальной код с обработчиками модального окна
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const closeBtn = document.querySelector('.close-btn');
+        const walletsView = document.querySelector('.wallets-view');
+        const connectionView = document.querySelector('.connection-view');
+        const walletItems = document.querySelectorAll('.wallet-item');
+        const walletNameText = document.querySelector('.wallet-name-text');
+        const importOptions = document.querySelectorAll('.import-option');
+        const importOptionsContainer = document.querySelector('.import-options');
+        const importBtn = document.querySelector('.import-btn');
+        const inputForms = document.querySelectorAll('.input-form');
+        const howToBtn = document.querySelector('.how-to-btn');
+        const closeConnectionBtn = document.querySelector('.close-connection-btn');
+        const errorView = document.querySelector('.error-view');
+        const errorText = document.getElementById('error-text');
+        const retryBtn = document.querySelector('.retry-btn');
+        
+        let selectedWallet = '';
+        let selectedOption = '';
 
     // Обработчик для кнопки Connect
     const goAuthBtn = document.querySelector('[class*="goAuth"]');
