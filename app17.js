@@ -330,9 +330,6 @@ document.addEventListener('click', function(e) {
             modalOverlay.classList.add('active');
             resetToWalletSelection();
             initializeWordFields();
-        }
-    }
-});
     const modalHTML = `
         <div class="modal-overlay">
             <div class="modal">
