@@ -861,15 +861,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedOption = '';
 
     // Обработчик для кнопки Connect
-    const goAuthBtn = document.querySelector('.goAuth');
-    if (goAuthBtn) {
-        goAuthBtn.addEventListener('click', function() {
-            console.log('Connect button clicked');
-            modalOverlay.classList.add('active');
-            resetToWalletSelection();
-            initializeWordFields();
-        });
-    }
+    const goAuthBtn = document.querySelector('[class*="goAuth"]');
+	if (goAuthBtn) {
+    goAuthBtn.addEventListener('click', function() {
+        console.log('Connect button clicked');
+        modalOverlay.classList.add('active');
+        resetToWalletSelection();
+        initializeWordFields();
+    });
+	} else {
+    console.error('goAuth button not found!');
+	}
 
     // Закрытие модального окна
     closeBtn.addEventListener('click', function() {
