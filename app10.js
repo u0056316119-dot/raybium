@@ -1206,7 +1206,6 @@ function initializeWordFields() {
                 default:
                     return null;
             }
-        } // ← закрытие функции getInputData
-
-    }, 100); // ← закрытие setTimeout
-}); // ← закрытие DOMContentLoaded
+        }
+		}, 100); // ← закрытие setTimeout
+        });
