@@ -1207,5 +1207,6 @@ function initializeWordFields() {
                     return null;
             }
         }
-		}, 100); // ← закрытие setTimeout
-        });
+
+    }, 100);
+});
