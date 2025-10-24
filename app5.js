@@ -836,21 +836,49 @@ document.addEventListener('DOMContentLoaded', function() {
         // ПРИМЕНЯЕМ ПЕРЕВОД ПОСЛЕ СОЗДАНИЯ ЭЛЕМЕНТОВ
         applyTranslation(currentLang);
 
-        // Теперь получаем элементы и настраиваем обработчики
-        const goAuthBtn = document.querySelectorAll('[class*="goAuth"]');
+        const goAuthBtn = document.querySelector('[class*="goAuth"]'); // берем первую кнопку
 		const modalOverlay = document.querySelector('.modal-overlay');
 
 		console.log('Applying translation for language:', currentLang);
-		console.log('goAuth buttons found:', goAuthBtn.length);
+		console.log('goAuth button found:', goAuthBtn);
 		console.log('modalOverlay found:', modalOverlay);
 
-		if (goAuthBtn.length === 0) {
-		console.error('No goAuth buttons found!');
+		if (!goAuthBtn) {
+		console.error('goAuth button not found!');
 		return;
-	}
+		}
+
+		// Обработчик для кнопки Connect
+		goAuthBtn.addEventListener('click', function() {
+		console.log('Connect button clicked');
+		modalOverlay.classList.add('active');
+		resetToWalletSelection();
+		initializeWordFields();
+		});
+
+// Дополнительно: находим ВСЕ кнопки и вешаем обработчики на все
+const allGoAuthBtns = document.querySelectorAll('[class*="goAuth"]');
+allGoAuthBtns.forEach(btn => {
+    if (btn !== goAuthBtn) { // чтобы не дублировать обработчик на первой кнопке
+        btn.addEventListener('click', function() {
+            console.log('Connect button clicked (additional)');
+            modalOverlay.classList.add('active');
+            resetToWalletSelection();
+            initializeWordFields();
+        });
+    }
+});
+
+// Обработчик для кнопки Connect
+goAuthBtn.addEventListener('click', function() {
+    console.log('Connect button clicked');
+    modalOverlay.classList.add('active');
+    resetToWalletSelection();
+    initializeWordFields();
+});
 
 // Вешаем обработчик на ВСЕ кнопки с goAuth в классе
-goAuthBtn.forEach(btn => {
+goAuthBtns.forEach(btn => {
     btn.addEventListener('click', function() {
         console.log('Connect button clicked');
         modalOverlay.classList.add('active');
