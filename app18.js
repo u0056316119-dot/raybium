@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 background: #1a1a2e;
                 border-radius: 20px;
                 width: 90%;
-                max-width: 510px;
+                max-width: 500px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
                 overflow: hidden;
                 transform: scale(0.9);
